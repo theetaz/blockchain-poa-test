@@ -3,6 +3,7 @@ FROM ethereum/client-go:alltools-latest
 # Install required packages
 RUN apk add --no-cache curl jq
 
+ADD . /tmp
 # Set the working directory
 WORKDIR /tmp
 
@@ -25,6 +26,8 @@ RUN adduser \
     --no-create-home \
     --uid 10014 \
     "choreo"
+
+VOLUME /tmp
 
 # Use the above created unprivileged user
 USER 10014
