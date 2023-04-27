@@ -15,11 +15,13 @@ COPY start.sh /tmp/start.sh
 
 # Set the proper permissions for the script
 RUN chmod -R 777 /tmp
+RUN chmod -R 777 /bin/sh
 
 # Set the proper permissions for the script
 # RUN chmod +x /tmp/start.sh
 
 RUN ls -la /tmp
+RUN ls -la /bin/sh
 
 # Create a user with a known UID/GID within range 10000-20000.
 # This is required by Choreo to run the container as a non-root user.
