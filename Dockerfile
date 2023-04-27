@@ -33,8 +33,11 @@ RUN adduser \
     --uid 10014 \
     "choreo"
 
+RUN chown -R choreo /tmp
+
 # Use the above created unprivileged user
 USER 10014
+
 
 
 # Expose the required ports
