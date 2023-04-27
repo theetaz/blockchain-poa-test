@@ -33,7 +33,7 @@ RUN adduser \
     --uid 10014 \
     "choreo"
 
-RUN chown -R choreo /tmp
+RUN chown -R choreo:choreo /tmp
 
 # Use the above created unprivileged user
 USER 10014
@@ -46,4 +46,4 @@ EXPOSE 30301 30310 30311 8040 8041 8551 8552
 RUN ls -la /tmp
 
 # Set the entry point to the startup script
-ENTRYPOINT ["/tmp/start.sh"]
+ENTRYPOINT ["/bin/sh", "/tmp/start.sh"]
