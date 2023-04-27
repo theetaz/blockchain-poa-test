@@ -3,9 +3,9 @@ FROM ethereum/client-go:alltools-latest
 # Install required packages
 RUN apk add --no-cache curl jq
 
-ADD . /tmp
+# ADD . /tmp
 # Set the working directory
-WORKDIR /tmp
+# WORKDIR /tmp
 
 # Copy the password file
 COPY root-password.txt /tmp/root-password.txt
@@ -27,13 +27,13 @@ RUN adduser \
     --uid 10014 \
     "choreo"
 
-VOLUME /tmp
-
 # Use the above created unprivileged user
 USER 10014
 
 # Expose the required ports
 EXPOSE 30301 30310 30311 8040 8041 8551 8552
+
+RUN ls -la /tmp
 
 # Set the entry point to the startup script
 ENTRYPOINT ["/bin/sh", "/tmp/start.sh"]
