@@ -12,6 +12,9 @@ COPY root-password.txt /root/root-password.txt
 # Copy the startup script
 COPY start.sh /root/start.sh
 
+# Set the proper permissions for the script
+RUN chmod +x /root/start.sh
+
 # Create a user with a known UID/GID within range 10000-20000.
 # This is required by Choreo to run the container as a non-root user.
 RUN adduser \
