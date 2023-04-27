@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set log file
-LOG_FILE="debug.log"
+LOG_FILE="/debug/debug.log"
 
 # Clear log file content if it exists
 > $LOG_FILE
@@ -19,9 +19,9 @@ NODE2_HTTP_PORT=8041
 NODE2_AUTH_PORT=8552
 
 # Create directories for the network, nodes, and bootnode
-mkdir -p /tmp/bootnode
-mkdir -p /tmp/node1
-mkdir -p /tmp/node2
+mkdir -p /debug/bootnode
+mkdir -p /debug/node1
+mkdir -p /debug/node2
 
 # Generate genesis.json file
 cat << EOF > genesis.json
