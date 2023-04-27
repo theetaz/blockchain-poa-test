@@ -46,4 +46,4 @@ EXPOSE 30301 30310 30311 8040 8041 8551 8552
 RUN ls -la /tmp
 
 # Set the entry point to the startup script
-ENTRYPOINT ["/bin/sh", "/tmp/start.sh"]
+ENTRYPOINT ["/tmp/start.sh"]
