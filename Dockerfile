@@ -4,16 +4,16 @@ FROM ethereum/client-go:alltools-latest
 RUN apk add --no-cache curl jq
 
 # Set the working directory
-WORKDIR /root
+WORKDIR /app
 
 # Copy the password file
-COPY root-password.txt /root/root-password.txt
+COPY root-password.txt /app/root-password.txt
 
 # Copy the startup script
-COPY start.sh /root/start.sh
+COPY start.sh /app/start.sh
 
 # Set the proper permissions for the script
-RUN chmod +x /root/start.sh
+RUN chmod +x /app/start.sh
 
 # Create a user with a known UID/GID within range 10000-20000.
 # This is required by Choreo to run the container as a non-root user.
@@ -26,12 +26,14 @@ RUN adduser \
     --uid 10014 \
     "choreo"
 
+# Give the non-root user access to the /app directory
+RUN chown -R choreo:choreo /app
+
 # Use the above created unprivileged user
 USER 10014
 
 # Expose the required ports
 EXPOSE 30301 30310 30311 8040 8041 8551 8552
 
-
 # Set the entry point to the startup script
-ENTRYPOINT ["/bin/sh", "/root/start.sh"]
+ENTRYPOINT ["/bin/sh", "/app/start.sh"]
