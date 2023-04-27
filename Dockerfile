@@ -1,13 +1,16 @@
-FROM node:14
+FROM ethereum/client-go:alltools-latest
 
-WORKDIR /usr/src/app
+# Install required packages
+RUN apk add --no-cache curl jq
 
-COPY package*.json ./
+# Set the working directory
+WORKDIR /root
 
-RUN npm install
+# Copy the password file
+COPY root-password.txt /root/root-password.txt
 
-COPY . .
-
+# Copy the startup script
+COPY start.sh /root/start.sh
 
 # Create a user with a known UID/GID within range 10000-20000.
 # This is required by Choreo to run the container as a non-root user.
@@ -23,6 +26,9 @@ RUN adduser \
 # Use the above created unprivileged user
 USER 10014
 
-EXPOSE 3000
+# Expose the required ports
+EXPOSE 30301 30310 30311 8040 8041 8551 8552
 
-CMD [ "node", "index.js" ]
+
+# Set the entry point to the startup script
+ENTRYPOINT ["/bin/sh", "/root/start.sh"]
