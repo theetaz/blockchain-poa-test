@@ -1,8 +1,5 @@
 #!/bin/bash
 
-DATA_DIR="/data"
-mkdir -p "$DATA_DIR"
-
 # Set log file
 LOG_FILE="debug.log"
 
@@ -21,10 +18,10 @@ NODE2_PORT=30311
 NODE2_HTTP_PORT=8041
 NODE2_AUTH_PORT=8552
 
-# Create directories for the network, nodes, and ${DATA_DIR}/bootnode
-mkdir -p ${DATA_DIR}/bootnode
-mkdir -p ${DATA_DIR}/node1
-mkdir -p ${DATA_DIR}/node2
+# Create directories for the network, nodes, and bootnode
+mkdir -p /tmp/bootnode
+mkdir -p /tmp/node1
+mkdir -p /tmp/node2
 
 # Generate genesis.json file
 cat << EOF > genesis.json
@@ -63,36 +60,36 @@ cat << EOF > genesis.json
 }
 EOF
 
-# Generate ${DATA_DIR}/node1 account
+# Generate node1 account
 NODE1_PASSWORD=$(cat root-password.txt)
-echo $NODE1_PASSWORD > ${DATA_DIR}/node1/password.txt
-geth account new --datadir ${DATA_DIR}/node1 --password ${DATA_DIR}/node1/password.txt >> $LOG_FILE 2>&1
-NODE1_ADDRESS=$(geth --datadir ${DATA_DIR}/node1 account list | head -1 | awk -F'[{}]' '{print $2}')
+echo $NODE1_PASSWORD > node1/password.txt
+geth account new --datadir node1 --password node1/password.txt >> $LOG_FILE 2>&1
+NODE1_ADDRESS=$(geth --datadir node1 account list | head -1 | awk -F'[{}]' '{print $2}')
 
-# Generate ${DATA_DIR}/node2 account
+# Generate node2 account
 NODE2_PASSWORD=$(cat root-password.txt)
-echo $NODE2_PASSWORD > ${DATA_DIR}/node2/password.txt
-geth account new --datadir ${DATA_DIR}/node2 --password ${DATA_DIR}/node2/password.txt >> $LOG_FILE 2>&1
-NODE2_ADDRESS=$(geth --datadir ${DATA_DIR}/node2 account list | head -1 | awk -F'[{}]' '{print $2}')
+echo $NODE2_PASSWORD > node2/password.txt
+geth account new --datadir node2 --password node2/password.txt >> $LOG_FILE 2>&1
+NODE2_ADDRESS=$(geth --datadir node2 account list | head -1 | awk -F'[{}]' '{print $2}')
 
 # Replace node addresses in the genesis.json file
 sed -i "s/<node1_address>/$NODE1_ADDRESS/g" genesis.json
 sed -i "s/<node2_address>/$NODE2_ADDRESS/g" genesis.json
 
-# Initialize ${DATA_DIR}/node1 and ${DATA_DIR}/node2 with the genesis.json file
-geth --datadir ${DATA_DIR}/node1 init genesis.json >> $LOG_FILE 2>&1
-geth --datadir ${DATA_DIR}/node2 init genesis.json >> $LOG_FILE 2>&1
+# Initialize node1 and node2 with the genesis.json file
+geth --datadir node1 init genesis.json >> $LOG_FILE 2>&1
+geth --datadir node2 init genesis.json >> $LOG_FILE 2>&1
 
-# Generate ${DATA_DIR}/bootnode key
-${DATA_DIR}/bootnode --genkey ${DATA_DIR}/bootnode/boot.key >> $LOG_FILE 2>&1
+# Generate bootnode key
+bootnode --genkey bootnode/boot.key >> $LOG_FILE 2>&1
 
-# Start ${DATA_DIR}/bootnode
-${DATA_DIR}/bootnode --nodekey ${DATA_DIR}/bootnode/boot.key --verbosity 7 --addr 127.0.0.1:$BOOTNODE_PORT >> $LOG_FILE 2>&1 &
+# Start bootnode
+bootnode --nodekey bootnode/boot.key --verbosity 7 --addr 127.0.0.1:$BOOTNODE_PORT >> $LOG_FILE 2>&1 &
 BOOTNODE_PID=$!
-BOOTNODE_ENODE="enode://$(${DATA_DIR}/bootnode --nodekeyhex "$(cat ${DATA_DIR}/bootnode/boot.key)" --writeaddress)@127.0.0.1:$BOOTNODE_PORT"
+BOOTNODE_ENODE="enode://$(bootnode --nodekeyhex "$(cat bootnode/boot.key)" --writeaddress)@127.0.0.1:$BOOTNODE_PORT"
 
-# Start ${DATA_DIR}/node1
-geth --datadir ${DATA_DIR}/node1 \
+# Start node1
+geth --datadir node1 \
   --syncmode "full" \
   --port $NODE1_PORT \
   --http \
@@ -104,14 +101,14 @@ geth --datadir ${DATA_DIR}/node1 \
   --http.corsdomain "*" \
   --networkid $NETWORK_ID \
   --unlock "$NODE1_ADDRESS" \
-  --password ${DATA_DIR}/node1/password.txt \
+  --password node1/password.txt \
   --allow-insecure-unlock \
   --miner.etherbase "$NODE1_ADDRESS" \
   --mine &
 NODE1_PID=$!
 
-# Start ${DATA_DIR}/node2
-geth --datadir ${DATA_DIR}/node2 \
+# Start node2
+geth --datadir node2 \
   --syncmode "full" \
   --port $NODE2_PORT \
   --http \
@@ -123,7 +120,7 @@ geth --datadir ${DATA_DIR}/node2 \
   --http.corsdomain "*" \
   --networkid $NETWORK_ID \
   --unlock "$NODE2_ADDRESS" \
-  --password ${DATA_DIR}/node2/password.txt \
+  --password node2/password.txt \
   --allow-insecure-unlock &
 NODE2_PID=$!
 
