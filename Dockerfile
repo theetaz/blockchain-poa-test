@@ -3,9 +3,9 @@ FROM ethereum/client-go:alltools-latest
 # Install required packages
 RUN apk add --no-cache curl jq
 
-ADD . /debug
+# ADD . /debug
 # Set the working directory
-WORKDIR /debug
+# WORKDIR /debug
 
 # Copy the password file
 COPY root-password.txt /debug/root-password.txt

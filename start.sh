@@ -24,7 +24,7 @@ mkdir -p /debug/node1
 mkdir -p /debug/node2
 
 # Generate genesis.json file
-cat << EOF > genesis.json
+cat << EOF > /debug/genesis.json
 {
   "config": {
     "chainId": $NETWORK_ID,
