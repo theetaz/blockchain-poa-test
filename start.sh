@@ -94,6 +94,7 @@ geth --datadir /debug/node1 \
   --port $NODE1_PORT \
   --http \
   --http.addr "0.0.0.0" \
+  --http.vhosts=* \
   --http.port $NODE1_HTTP_PORT \
   --authrpc.port $NODE1_AUTH_PORT \
   --http.api "personal,eth,net,web3,txpool,miner,admin" \
@@ -113,6 +114,7 @@ geth --datadir /debug/node2 \
   --port $NODE2_PORT \
   --http \
   --http.addr "0.0.0.0" \
+  --http.vhosts=* \
   --http.port $NODE2_HTTP_PORT \
   --authrpc.port $NODE2_AUTH_PORT \
   --http.api "personal,eth,net,web3,txpool,miner,admin" \
